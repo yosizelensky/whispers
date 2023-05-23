@@ -1,4 +1,4 @@
-TOKEN = "5817711645:AAFVT6GAOpfANR2OSxcdlN9xW5WwAmIhUGI"
+TOKEN = "5801652759:AAFVrHysy_Jv145fsxteRmzFcgeRX9RG5ls"
 NAME = "Whispers"
 WEBHOOK = False
 # The following configuration is only needed if you setted WEBHOOK to True #
