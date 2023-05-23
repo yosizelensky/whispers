@@ -11,12 +11,20 @@ import random
 logger = getLogger(__name__)
 
 from telegram.ext import CommandHandler, CallbackQueryHandler, ConversationHandler
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
 
 
 ############################### Bot ############################################
 def start(update, context):
     update.message.reply_text('Whispers', reply_markup=language_menu_keyboard())
+    # Create a custom keyboard with location and live location buttons
+    keyboard = [
+        [KeyboardButton('Send Location', request_location=True)]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=False, is_persistent=True)
+    
+    # Send a message with the custom keyboard
+    update.message.reply_text(' ', reply_markup=reply_markup)
 
 
 def language_menu(update, context):
@@ -225,6 +233,10 @@ def handle_register_response(update, context):
         save_to_db(update.effective_user.username, context.user_data)
         return ConversationHandler.END
 
+# Handler for receiving location updates
+def location_handler(update, context):
+    location = update.message.location
+    update.message.reply_text(f'Your location: {location.latitude}, {location.longitude}')
 
 def init(dispatcher: Dispatcher):
     """Provide handlers initialization."""
@@ -248,3 +260,6 @@ def init(dispatcher: Dispatcher):
     )
 
     dispatcher.add_handler(whisper_register_handler)
+
+    dispatcher.add_handler(MessageHandler(Filters.location, location_handler))
+
