@@ -12,37 +12,43 @@ from telegram.ext import CommandHandler, CallbackQueryHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 ############################### Bot ############################################
 def start(update, context):
-  update.message.reply_text(menu_message(),
-                            reply_markup=main_menu_keyboard())
+  update.message.reply_text(eng_menu_message(), reply_markup=language_menu_keyboard())
 
-def main_menu(update,context):
+def language_menu(update,context):
   query = update.callback_query
   query.answer()
-  query.edit_message_text(
-                        text=menu_message(),
-                        reply_markup=main_menu_keyboard())
+  query.edit_message_text(text=eng_menu_message(), reply_markup=language_menu_keyboard())
 
-def first_menu(update,context):
+def get_help_hebrew_menu(update,context):
   query = update.callback_query
   query.answer()
-  query.edit_message_text(
-                        text=menu_message(),
-                        reply_markup=first_menu_keyboard())
+  query.edit_message_text(text=heb_menu_message(), reply_markup=get_help_hebrew_menu_keyboard())
 
-def second_menu(update,context):
+def get_help_english_menu(update,context):
   query = update.callback_query
   query.answer()
-  query.edit_message_text(
-                        text=menu_message(),
-                        reply_markup=second_menu_keyboard())
+  query.edit_message_text(text=eng_menu_message(), reply_markup=get_help_english_menu_keyboard())
 
-def third_menu(update,context):
+def get_help_arabic_menu(update,context):
   query = update.callback_query
   query.answer()
-  query.edit_message_text(
-                        text=menu_message(),
-                        reply_markup=third_menu_keyboard())
-# and so on for every callback_data option
+  query.edit_message_text(text=arb_menu_message(), reply_markup=get_help_arabic_menu_keyboard())
+
+def hebrew_menu(update,context):
+  query = update.callback_query
+  query.answer()
+  query.edit_message_text(text=heb_menu_message(), reply_markup=hebrew_menu_keyboard())
+
+def english_menu(update,context):
+  query = update.callback_query
+  query.answer()
+  query.edit_message_text(text=eng_menu_message(), reply_markup=english_menu_keyboard())
+
+def arabic_menu(update,context):
+  query = update.callback_query
+  query.answer()
+  query.edit_message_text(text=arb_menu_message(), reply_markup=arabic_menu_keyboard())
+
 def first_submenu(bot, update):
   pass
 
@@ -53,57 +59,69 @@ def third_submenu(bot, update):
     pass
 
 ############################ Keyboards #########################################
-def main_menu_keyboard():
-  keyboard = [[InlineKeyboardButton('Get Immediate Help', callback_data='m1')],
-              [InlineKeyboardButton('Report Anonymously', callback_data='m2')],
-              [InlineKeyboardButton('Get Information', callback_data='m3')]]
+def language_menu_keyboard():
+  keyboard = [[InlineKeyboardButton('עברית', callback_data='hebrew')],
+              [InlineKeyboardButton('English', callback_data='english')],
+              [InlineKeyboardButton('عربيه', callback_data='arabic')]]
   return InlineKeyboardMarkup(keyboard)
 
-def first_menu_keyboard():
-  keyboard = [[InlineKeyboardButton('Send distress call for Michal Sela forum', callback_data='m1_1')],
-              [InlineKeyboardButton('Call 911', callback_data='m1_2')],
-              [InlineKeyboardButton('➡️', callback_data='main')]]
+def hebrew_menu_keyboard():
+  keyboard = [[InlineKeyboardButton('קבלי עזרה מיידית', callback_data='heb_immediate_help')],
+              [InlineKeyboardButton('דיווח אנונימי', callback_data='heb_anonymous_report')],
+              [InlineKeyboardButton('קבלי מידע', callback_data='heb_get_help')],
+              [InlineKeyboardButton('⬅️', callback_data='language_menu_keyboard')]]
   return InlineKeyboardMarkup(keyboard)
 
-def second_menu_keyboard():
-  keyboard = [[InlineKeyboardButton('Report to Social Services', url='https://govforms.gov.il/mw/forms/MolsaContact@molsa.gov.il',
-                                    callback_data='m2_1')],
-              [InlineKeyboardButton('Report illegal gun', url='https://gfkt.org/%D7%98%D7%95%D7%A4%D7%A1-%D7%93%D7%99%D7%95%D7%95%D7%97-%D7%97%D7%99%D7%99%D7%9D-%D7%91%D7%A6%D7%93-%D7%A0%D7%A9%D7%A7/',
-                                    callback_data='m2_2')],
-              [InlineKeyboardButton('➡️', callback_data='main')]]
+def english_menu_keyboard():
+  keyboard = [[InlineKeyboardButton('Get Immediate Help', callback_data='eng_immediate_help')],
+              [InlineKeyboardButton('Report Anonymously', callback_data='eng_anonymous_report')],
+              [InlineKeyboardButton('Get Information', callback_data='eng_get_help')],
+              [InlineKeyboardButton('⬅️', callback_data='language_menu_keyboard')]]
   return InlineKeyboardMarkup(keyboard)
 
-def third_menu_keyboard():
-  keyboard = [[InlineKeyboardButton('Warning sings in a violent relationship', url='https://www.michalsela.org.il/warning-signs',
-               callback_data='m3_1')],
-              [InlineKeyboardButton('Sign-up to Sayeret Michal project', url='https://www.michalsela.org.il/sayeret',
-                                    callback_data='m3_2')],
-              [InlineKeyboardButton('Contact Michal Sela forum', url='https://www.michalsela.org.il/contact',
-                                    callback_data='m3_3')],
-              [InlineKeyboardButton('➡️', callback_data='main')]]
+def arabic_menu_keyboard():
+  keyboard = [[InlineKeyboardButton('احصل على مساعدة فورية', callback_data='arb_immediate_help')],
+              [InlineKeyboardButton('تقرير مجهول', callback_data='arb_anonymous_report')],
+              [InlineKeyboardButton('احصل على المعلومات', callback_data='arb_get_help')],
+              [InlineKeyboardButton('⬅️', callback_data='language_menu_keyboard')]]
+  return InlineKeyboardMarkup(keyboard)
+
+def get_help_hebrew_menu_keyboard():
+  keyboard = [[InlineKeyboardButton('קריאת מצוקה לפורום מיכל סלה', callback_data='heb_distress_call')],
+              [InlineKeyboardButton('להתקשר למשטרה', callback_data='heb_call_police')],
+              [InlineKeyboardButton('⬅️', callback_data='language_menu_keyboard')]]
+  return InlineKeyboardMarkup(keyboard)
+
+def get_help_english_menu_keyboard():
+  keyboard = [[InlineKeyboardButton('Send distress call for Michal Sela forum', callback_data='eng_distress_call')],
+              [InlineKeyboardButton('Call 911', callback_data='eng_call_police')],
+              [InlineKeyboardButton('➡️', callback_data='language_menu_keyboard')]]
+  return InlineKeyboardMarkup(keyboard)
+
+def get_help_arabic_menu_keyboard():
+  keyboard = [[InlineKeyboardButton('إرسال نداء استغاثة لمنتدى ميشال سيلا', callback_data='arb_distress_call')],
+              [InlineKeyboardButton('الشرطة الدعوة', callback_data='arb_call_police')],
+              [InlineKeyboardButton('➡️', callback_data='language_menu_keyboard')]]
   return InlineKeyboardMarkup(keyboard)
 
 ############################# Messages #########################################
-def menu_message():
+def eng_menu_message():
   return 'Choose an option:'
 
+def heb_menu_message():
+  return 'בחרי אפשרות:'
+
+def arb_menu_message():
+  return 'إختر خيار:'
 ############################# Handlers #########################################
 
 def init(dispatcher: Dispatcher):
     """Provide handlers initialization."""
     dispatcher.add_handler(CommandHandler('start', start))
-    dispatcher.add_handler(CallbackQueryHandler(main_menu, pattern='main'))
-    dispatcher.add_handler(CallbackQueryHandler(first_menu, pattern='m1'))
-    dispatcher.add_handler(CallbackQueryHandler(second_menu, pattern='m2'))
-    dispatcher.add_handler(CallbackQueryHandler(third_menu, pattern='m3'))
-    dispatcher.add_handler(CallbackQueryHandler(first_submenu,
-                                                pattern='m1_1'))
-    dispatcher.add_handler(CallbackQueryHandler(second_submenu,
-                                                pattern='m2_1'))
-    dispatcher.add_handler(CallbackQueryHandler(third_submenu,
-                                                pattern='m3_1'))
-
-
+    dispatcher.add_handler(CallbackQueryHandler(language_menu, pattern='language_menu_keyboard'))
+    dispatcher.add_handler(CallbackQueryHandler(hebrew_menu, pattern='hebrew'))
+    dispatcher.add_handler(CallbackQueryHandler(english_menu, pattern='english'))
+    dispatcher.add_handler(CallbackQueryHandler(arabic_menu, pattern='arabic'))
 
 # def start(update: Update, _: CallbackContext):
 #     """Process a /start command."""
