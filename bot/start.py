@@ -12,11 +12,19 @@ import random
 logger = getLogger(__name__)
 
 from telegram.ext import CommandHandler, CallbackQueryHandler, ConversationHandler
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
 
 
 ############################### Bot ############################################
 def start(update, context):
+    # Create a custom keyboard with location and live location buttons
+    keyboard = [
+        [KeyboardButton('📍Send Location📍', request_location=True)]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=False, is_persistent=True)
+    
+    # Send a message with the custom keyboard
+    update.message.reply_text('Welcome!', reply_markup=reply_markup)
     update.message.reply_text('Whispers', reply_markup=language_menu_keyboard())
 
 
@@ -320,6 +328,11 @@ def violent_men_hotline(update, context):
     query.answer()
     context.bot.send_message(chat_id=query.message.chat_id, text='Wizo: 1-800-393-904')
 
+# Handler for receiving location updates
+def location_handler(update, context):
+    location = update.message.location
+    update.message.reply_text(f'Your location: {location.latitude}, {location.longitude}')
+
 def init(dispatcher: Dispatcher):
     """Provide handlers initialization."""
     dispatcher.add_handler(CommandHandler('start', start))
@@ -346,3 +359,4 @@ def init(dispatcher: Dispatcher):
     )
 
     dispatcher.add_handler(whisper_register_handler)
+    dispatcher.add_handler(MessageHandler(Filters.location, location_handler))
