@@ -5,6 +5,8 @@ from logging import getLogger
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler, Dispatcher, MessageHandler, Filters
 
+import random
+
 # Init logger
 logger = getLogger(__name__)
 
@@ -61,6 +63,15 @@ def anonymous_report_menu(update, context):
     query.answer()
     query.edit_message_text(text=strings[context.user_data['lang']]['anonymous_report_menu_msg'], reply_markup=get_help_menu_keyboard(context))
 
+def distress_call_callback(update, context):
+    query = update.callback_query
+    username = random.choice(list(whispers.keys()))
+    t_link = f'https://t.me/{username}'
+    
+    query.answer()
+    context.bot.send_message(chat_id=query.message.chat_id, text=t_link)
+    
+
 ############################ Keyboards #########################################
 def language_menu_keyboard():
     keyboard = [[InlineKeyboardButton('עברית', callback_data='heb_menu')],
@@ -86,7 +97,7 @@ def supported_menu_keyboard(context):
 
 
 def get_help_menu_keyboard(context):
-    keyboard = [[InlineKeyboardButton(strings[context.user_data['lang']]['distress_call'], callback_data='None')],
+    keyboard = [[InlineKeyboardButton(strings[context.user_data['lang']]['distress_call'], callback_data='distress_call')],
                 [InlineKeyboardButton(strings[context.user_data['lang']]['call_police'], callback_data='None')],
                 [InlineKeyboardButton('⬅️', callback_data='supported')]]
     return InlineKeyboardMarkup(keyboard)
@@ -174,6 +185,10 @@ questions = {
 }
 current_question = 0
 
+whispers = {}
+
+def save_to_db(username, user_data):
+    whispers[username] = user_data
 
 def register_as_whisper(update, context):
     global questions, current_question
@@ -207,7 +222,7 @@ def handle_register_response(update, context):
         update.message.reply_text(strings[context.user_data['lang']]['thank_you'])
         pprint(context)
         pprint(context.user_data)
-        # save_to_db(context)
+        save_to_db(update.effective_user.username, context.user_data)
         return ConversationHandler.END
 
 
@@ -220,7 +235,8 @@ def init(dispatcher: Dispatcher):
     dispatcher.add_handler(CallbackQueryHandler(arabic_menu, pattern='arb_menu'))
     dispatcher.add_handler(CallbackQueryHandler(supported_menu, pattern='supported'))
     dispatcher.add_handler(CallbackQueryHandler(get_help_menu, pattern='immediate_help'))
-    dispatcher.add_handler(CallbackQueryHandler(get_help_menu, pattern='anonymous_report'))
+    dispatcher.add_handler(CallbackQueryHandler(anonymous_report_menu, pattern='anonymous_report'))
+    dispatcher.add_handler(CallbackQueryHandler(distress_call_callback, pattern='distress_call'))
 
     # Add conversation handler with the states CHOOSING, ANSWERING and TYPING_REPLY
     whisper_register_handler = ConversationHandler(
