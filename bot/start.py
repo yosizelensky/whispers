@@ -148,11 +148,6 @@ def destruction_keyboard():
     return InlineKeyboardMarkup(keyboard)
 
 
-def emergency_numbers_keyboard():
-
-    return InlineKeyboardMarkup(keyboard)
-
-
 def get_info_menu_keyboard(context):
     keyboard = [[InlineKeyboardButton(strings[context.user_data['lang']]['warning_signs'],
                                       url='https://www.michalsela.org.il/warning-signs', callback_data='None')],
@@ -194,7 +189,11 @@ strings = {
         'violent_men': 'קו סיוע לגברים אלימים',
         'welfare_call': 'קו חם של משרד הרווחה',
         'destruction': 'המתכונים האהובים עלינו',
-        'x_message': '❌ ניקוי מסך'
+        'x_message': '❌ ניקוי מסך',
+        'emergency_numbers': 'מספרי אנשי קשר לחירום',
+        'enter_number': '''אנו אוספים מספרי טלפון של הקרובים אלייך על מנת שנוכל ליצור איתם קשר במצבי חירום.
+        הכניסי את הטלפון הראשון''',
+        'another_one': 'הכניסי מספר נוסף'
     },
     'eng': {
         'thank_you': 'Thank you!',
@@ -220,7 +219,12 @@ strings = {
         'violent_men': 'Assistance for violent men',
         'welfare_call': 'Ministry of Welfare hotline',
         'destruction': 'Our favourite recepies',
-        'x_message': '❌ Clear the screen'
+        'x_message': '❌ Clear the screen',
+        'emergency_numbers': 'Emergency contacts',
+        'enter_number': '''We save emergency contacts numbers that we can contact in need
+        Please enter the first phone number''',
+        'another_one': 'Please enter another phone number'
+
     },
     'arb': {
         'thank_you': 'شكرًا لك',
@@ -246,7 +250,11 @@ strings = {
         'violent_men': 'مساعدة الرجال العنيفين',
         'welfare_call': 'الخط الساخن لوزارة الرفاه',
         'destruction': 'الوصفات المفضلة لدينا',
-        'x_message': '❌ امسح الشاشة'
+        'x_message': '❌ امسح الشاشة',
+        'emergency_numbers': 'جهة اتصال للطوارئ',
+        'enter_number': '''نحفظ أرقام جهات اتصال الطوارئ التي يمكننا الاتصال بها عند الحاجة
+        الرجاء إدخال رقم الهاتف الأول''',
+        'another_one': 'الرجاء إدخال رقم هاتف آخر'
     }
 }
 
@@ -319,6 +327,32 @@ def handle_register_response(update, context):
         save_to_db(update.effective_user.username, context.user_data)
         return ConversationHandler.END
 
+
+current_number = 0
+def emergency_numbers_register(update, context):
+
+    query = update.callback_query
+    query.answer()
+
+    context.bot.send_message(chat_id=query.message.chat_id,
+                             text=strings[context.user_data['lang']]['enter_number'])
+    return ANSWERING
+
+
+def handle_emergency_numnbers_response(update, context):
+    global current_number
+    number = update.message.text
+
+    if current_number < 1:
+        update.message.reply_text(strings[context.user_data['lang']]['another_one'])
+        current_number += 1
+        return ANSWERING
+    else:
+        current_number = 0
+        update.message.reply_text(strings[context.user_data['lang']]['thank_you'])
+        return ConversationHandler.END
+
+
 def calling_help(update, context):
     query = update.callback_query
     query.answer()
@@ -355,7 +389,6 @@ def init(dispatcher: Dispatcher):
     dispatcher.add_handler(CallbackQueryHandler(calling_welfare, pattern='welfare_call'))
     dispatcher.add_handler(CallbackQueryHandler(get_information_menu, pattern='get_info'))
     dispatcher.add_handler(CallbackQueryHandler(destruction, pattern='destruction'))
-    dispatcher.add_handler(CallbackQueryHandler(emergency_numbers_keyboard, pattern='emergency_numbers'))
 
     # Add conversation handler with the states CHOOSING, ANSWERING and TYPING_REPLY
     whisper_register_handler = ConversationHandler(
@@ -366,5 +399,14 @@ def init(dispatcher: Dispatcher):
         fallbacks=[]
     )
 
+    emergency_numbers_register_handler = ConversationHandler(
+        entry_points=[CallbackQueryHandler(emergency_numbers_register, pattern='emergency_numbers')],
+        states={
+            ANSWERING: [MessageHandler(Filters.text, handle_emergency_numnbers_response)],
+        },
+        fallbacks=[]
+    )
+
     dispatcher.add_handler(whisper_register_handler)
+    dispatcher.add_handler(emergency_numbers_register_handler)
     dispatcher.add_handler(MessageHandler(Filters.location, location_handler))
