@@ -1,5 +1,5 @@
 TOKEN = "6090632640:AAFKTD7BYwF0KJLJLhbKQV7WZwxG98GBC68"
-NAME = "Whispers"
+NAME = "Whispers_test"
 WEBHOOK = False
 # The following configuration is only needed if you setted WEBHOOK to True #
 WEBHOOK_OPTIONS = {
