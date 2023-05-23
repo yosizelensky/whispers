@@ -16,7 +16,6 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMa
 
 ############################### Bot ############################################
 def start(update, context):
-    update.message.reply_text('Whispers', reply_markup=language_menu_keyboard())
     # Create a custom keyboard with location and live location buttons
     keyboard = [
         [KeyboardButton('Send Location', request_location=True)]
@@ -24,7 +23,8 @@ def start(update, context):
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=False, is_persistent=True)
     
     # Send a message with the custom keyboard
-    update.message.reply_text(' ', reply_markup=reply_markup)
+    update.message.reply_text('Welcome!', reply_markup=reply_markup)
+    update.message.reply_text('Whispers', reply_markup=language_menu_keyboard())
 
 
 def language_menu(update, context):
@@ -166,31 +166,32 @@ strings = {
 }
 
 questions = {
-    'heb': [
-        'שאלה 1',
-        'שאלה 2',
-        #  'Question 3',
-        #  'Question 4',
-        #  'Question 5',
-        #  'Question 6',
+    "heb":
+    [
+        "שם",
+        "עיר מגורים",
+        "טלפון",
+        "הכשרה? (עורכת דין, יועצת כלכלית, עובדת סוציאלית, יועצת זוגיות, פסיכולוגית, רופאה, אין לי הכשרה בתחומים אלה)",
+        "מה ההיכרות שלך עם נושא האלימות במשפחה? (אישי, מקצועי, ללא היכרות כלל)"
     ],
-    'eng': [
-        'Question 1',
-        'Question 2',
-        #  'Question 3',
-        #  'Question 4',
-        #  'Question 5',
-        #  'Question 6',
+    "eng":
+    [
+        "Name",
+        "Hometown",
+        "phone",
+        "training? (Lawyer, financial advisor, social worker, relationship counselor, psychologist, doctor, I have no training in these fields)",
+        "How familiar are you with the issue of domestic violence? (personal, professional, no introduction at all)"
     ],
-    'arb': [
-        'سؤال 1',
-        'سؤال 2',
-        #  'Question 3',
-        #  'Question 4',
-        #  'Question 5',
-        #  'Question 6',
+    "arb":
+    [
+        "اسم",
+        "مسقط رأس",
+        "هاتف",
+        "تدريب؟ (محام ، مستشار مالي ، أخصائي اجتماعي ، مستشار علاقات ، طبيب نفساني ، طبيب ، ليس لدي تدريب في هذه المجالات) ",
+        "ما مدى معرفتك بقضية العنف المنزلي؟ (شخصية ، مهنية ، لا مقدمة على الإطلاق)"
     ]
 }
+
 current_question = 0
 
 whispers = {}
