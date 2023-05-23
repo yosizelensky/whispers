@@ -84,6 +84,12 @@ def get_information_menu(update, context):
     query.answer()
     query.edit_message_text(text=strings[context.user_data['lang']]['get_info_menu_msg'], reply_markup=get_info_menu_keyboard(context))
 
+
+def emergency_call(update, context):
+    query = update.callback_query
+    query.answer()
+    context.bot.send_message(chat_id=query.message.chat_id, text=strings[context.user_data['lang']]['sms_sent'])
+
 def distress_call_callback(update, context):
     query = update.callback_query
     username = random.choice(list(whispers.keys()))
@@ -125,6 +131,7 @@ def get_help_menu_keyboard(context):
     keyboard = [[InlineKeyboardButton(strings[context.user_data['lang']]['distress_call'], callback_data='distress_call')],
                 [InlineKeyboardButton(strings[context.user_data['lang']]['welfare_call'], callback_data='welfare_call')],
                 [InlineKeyboardButton(strings[context.user_data['lang']]['call_help'], callback_data='calling_help')],
+                [InlineKeyboardButton(strings[context.user_data['lang']]['emergency_contacts'], callback_data='emergency_call')],
                  [InlineKeyboardButton(strings[context.user_data['lang']]['x_message'], callback_data='destruction')],
                 [InlineKeyboardButton('⬅️', callback_data='supported')]]
     return InlineKeyboardMarkup(keyboard)
@@ -193,7 +200,9 @@ strings = {
         'emergency_numbers': 'מספרי אנשי קשר לחירום',
         'enter_number': '''אנו אוספים מספרי טלפון של הקרובים אלייך על מנת שנוכל ליצור איתם קשר במצבי חירום.
         הכניסי את הטלפון הראשון''',
-        'another_one': 'הכניסי מספר נוסף'
+        'another_one': 'הכניסי מספר נוסף',
+        'emergency_contacts': 'צרו קשר עם מספרי החירום שלי',
+        'sms_sent': 'שלחנו הודעת אסמס למספרי החירום שלך'
     },
     'eng': {
         'thank_you': 'Thank you!',
@@ -221,8 +230,10 @@ strings = {
         'destruction': 'Our favourite recepies',
         'x_message': '❌ Clear the screen',
         'emergency_numbers': 'Emergency contacts',
-        'enter_number': '''We save emergency contacts numbers that we can contact in need\nPlease enter the first phone number''',
-        'another_one': 'Please enter another phone number'
+        'enter_number': 'We save emergency contacts numbers that we can contact in need\nPlease enter the first phone number',
+        'another_one': 'Please enter another phone number',
+        'emergency_contacts': 'Contact my emergency numbers',
+        'sms_sent': 'We sent an SMS to your emergency contacts'
 
     },
     'arb': {
@@ -253,7 +264,9 @@ strings = {
         'emergency_numbers': 'جهة اتصال للطوارئ',
         'enter_number': '''نحفظ أرقام جهات اتصال الطوارئ التي يمكننا الاتصال بها عند الحاجة
         الرجاء إدخال رقم الهاتف الأول''',
-        'another_one': 'الرجاء إدخال رقم هاتف آخر'
+        'another_one': 'الرجاء إدخال رقم هاتف آخر',
+        'emergency_contacts': 'اتصل بأرقام الطوارئ الخاصة بي',
+        'sms_sent': 'لقد أرسلنا رسالة نصية قصيرة إلى جهات اتصالك في حالات الطوارئ'
     }
 }
 
@@ -388,6 +401,7 @@ def init(dispatcher: Dispatcher):
     dispatcher.add_handler(CallbackQueryHandler(calling_welfare, pattern='welfare_call'))
     dispatcher.add_handler(CallbackQueryHandler(get_information_menu, pattern='get_info'))
     dispatcher.add_handler(CallbackQueryHandler(destruction, pattern='destruction'))
+    dispatcher.add_handler(CallbackQueryHandler(emergency_call, pattern='emergency_call'))
 
     # Add conversation handler with the states CHOOSING, ANSWERING and TYPING_REPLY
     whisper_register_handler = ConversationHandler(
