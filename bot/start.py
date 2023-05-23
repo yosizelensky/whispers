@@ -221,8 +221,7 @@ strings = {
         'destruction': 'Our favourite recepies',
         'x_message': '❌ Clear the screen',
         'emergency_numbers': 'Emergency contacts',
-        'enter_number': '''We save emergency contacts numbers that we can contact in need
-        Please enter the first phone number''',
+        'enter_number': '''We save emergency contacts numbers that we can contact in need\nPlease enter the first phone number''',
         'another_one': 'Please enter another phone number'
 
     },
