@@ -42,3 +42,5 @@ if __name__ == "__main__":
         updater.start_webhook(**settings.WEBHOOK_OPTIONS)
     else:
         updater.start_polling()
+        updater.idle()
+
