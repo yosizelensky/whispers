@@ -115,6 +115,7 @@ def supported_menu_keyboard(context):
     keyboard = [[InlineKeyboardButton(strings[context.user_data['lang']]['get_help'], callback_data='immediate_help')],
                 [InlineKeyboardButton(strings[context.user_data['lang']]['anon_report'], callback_data='anonymous_report')],
                 [InlineKeyboardButton(strings[context.user_data['lang']]['get_info'], callback_data='get_info')],
+                [InlineKeyboardButton(strings[context.user_data['lang']]['emergency_numbers'], callback_data='emergency_numbers')],
                 [InlineKeyboardButton(strings[context.user_data['lang']]['x_message'], callback_data='destruction')],
                 [InlineKeyboardButton('⬅️', callback_data=f'{context.user_data["lang"]}_menu')]]
     return InlineKeyboardMarkup(keyboard)
@@ -145,6 +146,12 @@ def destruction_keyboard():
                 [InlineKeyboardButton('Pasta 🍝', url='https://lilluna.com/spaghetti-recipe/', callback_data='None')],
                 [InlineKeyboardButton('Pizza 🍕', url='https://thefoodcharlatan.com/homemade-pizza-recipe/', callback_data='None')]]
     return InlineKeyboardMarkup(keyboard)
+
+
+def emergency_numbers_keyboard():
+
+    return InlineKeyboardMarkup(keyboard)
+
 
 def get_info_menu_keyboard(context):
     keyboard = [[InlineKeyboardButton(strings[context.user_data['lang']]['warning_signs'],
@@ -348,6 +355,7 @@ def init(dispatcher: Dispatcher):
     dispatcher.add_handler(CallbackQueryHandler(calling_welfare, pattern='welfare_call'))
     dispatcher.add_handler(CallbackQueryHandler(get_information_menu, pattern='get_info'))
     dispatcher.add_handler(CallbackQueryHandler(destruction, pattern='destruction'))
+    dispatcher.add_handler(CallbackQueryHandler(emergency_numbers_keyboard, pattern='emergency_numbers'))
 
     # Add conversation handler with the states CHOOSING, ANSWERING and TYPING_REPLY
     whisper_register_handler = ConversationHandler(
